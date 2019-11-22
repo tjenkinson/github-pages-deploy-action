@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { cp } from "@actions/io";
 import { execute } from "./util";
-import { workspace, action, root, repositoryPath } from "./constants";
+import { workspace, action, root, repositoryPath, isTest } from "./constants";
 
 /** Generates the branch if it doesn't exist on the remote.
  * @returns {Promise}
@@ -21,8 +21,8 @@ export async function init(): Promise<any> {
     }
 
     await execute(`git init`, workspace);
-    await execute(`git config user.name ${action.pusher.name}`, workspace);
-    await execute(`git config user.email ${action.pusher.email}`, workspace);
+    await execute(`git config user.name ${action.name}`, workspace);
+    await execute(`git config user.email ${action.email}`, workspace);
   } catch (error) {
     core.setFailed(`There was an error initializing the repository: ${error}`);
   } finally {
@@ -99,11 +99,14 @@ export async function deploy(): Promise<any> {
     });
   }
 
-  const hasFilesToCommit = await execute(`git status --porcelain`, temporaryDeploymentDirectory);
+  const hasFilesToCommit = await execute(
+    `git status --porcelain`,
+    temporaryDeploymentDirectory
+  );
 
-  if (!hasFilesToCommit) {
-    console.log('There is nothing to commit. Exiting...')
-    return Promise.resolve()
+  if (!hasFilesToCommit && !isTest) {
+    console.log("There is nothing to commit. Exiting...");
+    return Promise.resolve();
   }
 
   // Commits to GitHub.
