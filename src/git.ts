@@ -1,5 +1,4 @@
 import * as core from "@actions/core";
-import { cp } from "@actions/io";
 import { execute } from "./util";
 import { workspace, action, root, repositoryPath, isTest } from "./constants";
 
@@ -92,7 +91,7 @@ export async function deploy(): Promise<any> {
       action.build
     }/. ${temporaryDeploymentDirectory} ${
       action.clean ? `--delete --exclude CNAME --exclude .nojekyll` : ""
-    } --exclude .git --exclude .github ${
+    }  --exclude .git --exclude .github ${
       action.build === root ? `--exclude ${temporaryDeploymentDirectory}` : ""
     }`,
     workspace
