@@ -91,7 +91,7 @@ export async function deploy(): Promise<any> {
     `rsync -q -av --progress ${
       action.build
     }/. ${temporaryDeploymentDirectory} ${
-      action.clean ? `--delete` : ""
+      action.clean ? `--delete --exclude CNAME --exclude .nojekyll` : ""
     } --exclude .git --exclude .github ${
       action.build === root ? `--exclude ${temporaryDeploymentDirectory}` : ""
     }`,
