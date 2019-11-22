@@ -29,7 +29,7 @@ export const action = {
     pusher && pusher.email
       ? pusher.email
       : `${process.env.GITHUB_ACTOR ||
-          "github-pages-deploy-action"}@users.noreply.github.com`
+          "github-pages-deploy-action"}@users.noreply.github.com`,
   clean: core.getInput("CLEAN"),
 };
 
