@@ -18,6 +18,7 @@ export const action = {
   gitHubToken: core.getInput("GITHUB_TOKEN"),
   accessToken: core.getInput("ACCESS_TOKEN"),
   branch: core.getInput("BRANCH"),
+  targetFolder: core.getInput("TARGET_FOLDER"),
   baseBranch: core.getInput("BASE_BRANCH") || "master",
   name:
     pusher && pusher.name
@@ -30,7 +31,7 @@ export const action = {
       ? pusher.email
       : `${process.env.GITHUB_ACTOR ||
           "github-pages-deploy-action"}@users.noreply.github.com`,
-  clean: core.getInput("CLEAN"),
+  clean: core.getInput("CLEAN")
 };
 
 // Repository path used for commits/pushes.
