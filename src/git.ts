@@ -22,6 +22,7 @@ export async function init(): Promise<any> {
     await execute(`git init`, workspace);
     await execute(`git config user.name ${action.name}`, workspace);
     await execute(`git config user.email ${action.email}`, workspace);
+    await execute(`git pull`, workspace);
   } catch (error) {
     core.setFailed(`There was an error initializing the repository: ${error}`);
   } finally {
@@ -156,7 +157,10 @@ export async function deploy(): Promise<any> {
   // Cleans up temporary files/folders and restores the git state.
   console.log("Running post deployment cleanup jobs... 🔧");
   await execute(`rm -rf ${temporaryDeploymentDirectory}`, workspace);
-  await execute(`git checkout --progress --force ${action.defaultBranch}`, workspace)
+  await execute(
+    `git checkout --progress --force ${action.defaultBranch}`,
+    workspace
+  );
 
   return Promise.resolve("Commit step complete...");
 }
