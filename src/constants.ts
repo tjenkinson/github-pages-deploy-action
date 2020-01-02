@@ -15,7 +15,7 @@ export const action = {
     repository && repository.full_name
       ? repository.full_name
       : process.env.GITHUB_REPOSITORY,
-  gitHubToken: core.getInput("GITHUB_TOKEN"),
+  gitHubToken: core.getInput("GH_TOKEN"),
   accessToken: core.getInput("ACCESS_TOKEN"),
   branch: core.getInput("BRANCH"),
   targetFolder: core.getInput("TARGET_FOLDER"),
