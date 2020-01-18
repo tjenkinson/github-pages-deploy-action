@@ -7,7 +7,7 @@ export const isTest = process.env.UNIT_TEST;
 export const workspace: any = process.env.GITHUB_WORKSPACE;
 export const folder = core.getInput("FOLDER", { required: true });
 export const root = ".";
-export const ssh = "~/.ssh";
+export const ssh = `${process.env.HOME}/ssh`;
 export const isTest = process.env.UNIT_TEST;
 
 // Required action data.
