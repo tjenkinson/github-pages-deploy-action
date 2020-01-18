@@ -3,10 +3,10 @@ import * as github from "@actions/github";
 
 const { pusher, repository } = github.context.payload;
 
+export const isTest = process.env.UNIT_TEST;
 export const workspace: any = process.env.GITHUB_WORKSPACE;
 export const folder = core.getInput("FOLDER", { required: true });
 export const root = ".";
-export const isTest = process.env.UNIT_TEST;
 
 // Required action data.
 export const action = {
@@ -18,6 +18,7 @@ export const action = {
   clean: core.getInput("CLEAN"),
   cleanExclude: core.getInput("CLEAN_EXCLUDE"),
   defaultBranch: process.env.GITHUB_SHA ? process.env.GITHUB_SHA : "master",
+  deployKey: core.getInout("DEPLOY_KEY"),
   email:
     pusher && pusher.email
       ? pusher.email
@@ -38,7 +39,7 @@ export const action = {
 };
 
 // Repository path used for commits/pushes.
-export const repositoryPath = `https://${action.accessToken ||
+export const repositoryPath = action.deployKey ? `git@github.com:${action.gitHubRepository}` : `https://${action.accessToken ||
   `x-access-token:${action.gitHubToken}`}@github.com/${
   action.gitHubRepository
 }.git`;
