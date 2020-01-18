@@ -2,12 +2,11 @@
 process.env["INPUT_FOLDER"] = "build";
 process.env["GITHUB_SHA"] = "123";
 
-import _ from "lodash";
 import { action } from "../src/constants";
 import { deploy, generateBranch, init, switchToBaseBranch } from "../src/git";
 import { execute } from "../src/execute";
 
-const originalAction = _.cloneDeep(action);
+const originalAction = JSON.stringify(action);
 
 jest.mock("../src/execute", () => ({
   execute: jest.fn()
@@ -15,7 +14,7 @@ jest.mock("../src/execute", () => ({
 
 describe("git", () => {
   afterEach(() => {
-    _.assignIn(action, originalAction);
+    Object.assign(action, JSON.parse(originalAction));
   });
 
   describe("init", () => {
@@ -30,7 +29,7 @@ describe("git", () => {
       });
 
       const call = await init();
-      expect(execute).toBeCalledTimes(4);
+      expect(execute).toBeCalledTimes(6);
       expect(call).toBe("Initialization step complete...");
     });
 
@@ -46,7 +45,7 @@ describe("git", () => {
 
       const call = await init();
 
-      expect(execute).toBeCalledTimes(4);
+      expect(execute).toBeCalledTimes(6);
       expect(call).toBe("Initialization step complete...");
     });
 
@@ -109,7 +108,7 @@ describe("git", () => {
 
       const call = await init();
 
-      expect(execute).toBeCalledTimes(4);
+      expect(execute).toBeCalledTimes(6);
       expect(call).toBe("Initialization step complete...");
     });
   });
@@ -117,7 +116,7 @@ describe("git", () => {
   describe("generateBranch", () => {
     it("should execute five commands", async () => {
       const call = await generateBranch();
-      expect(execute).toBeCalledTimes(5);
+      expect(execute).toBeCalledTimes(6);
       expect(call).toBe("Deployment branch creation step complete... ✅");
     });
   });
@@ -144,7 +143,7 @@ describe("git", () => {
       const call = await deploy();
 
       // Includes the call to generateBranch
-      expect(execute).toBeCalledTimes(17);
+      expect(execute).toBeCalledTimes(18);
       expect(call).toBe("Commit step complete...");
     });
   });
