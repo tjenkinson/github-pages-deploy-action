@@ -28,6 +28,11 @@ export async function init(): Promise<any> {
         `echo "${action.deployKey}" > "id_rsa"`,
         ssh
       );
+
+      await execute(
+        `ssh -T git@github.com`,
+        workspace
+      );
     }
 
     if (action.build.startsWith("/") || action.build.startsWith("./")) {
