@@ -30,6 +30,11 @@ export async function init(): Promise<any> {
       );
 
       await execute(
+        `echo "id_rsa" | wc -c`,
+        ssh
+      );
+
+      await execute(
         `ssh -T git@github.com`,
         workspace
       );
