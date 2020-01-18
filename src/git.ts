@@ -19,8 +19,12 @@ export async function init(): Promise<any> {
     }
 
     if (!isNullOrUndefined(action.deployKey)) {
-      await execute(`mkdir .ssh`, workspace)
-      await execute(`echo "${action.deployKey}" > "~/.ssh/id_rsa"`, workspace)
+      const sshDirectory = `${workspace}/.ssh`;
+      await execute(`mkdir ${sshDirectory}`, workspace);
+      await execute(
+        `echo "${action.deployKey}" > "${sshDirectory}/id_rsa"`,
+        workspace
+      );
     }
 
     if (action.build.startsWith("/") || action.build.startsWith("./")) {
