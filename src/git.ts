@@ -32,7 +32,7 @@ export async function init(): Promise<any> {
       await execute(`mkdir -p ${ssh}`, workspace);
       await createFile(`${ssh}/id_rsa`, action.deployKey, {
         mode: 0o400,
-        flag: 'ax"'
+        flag: 'ax'
       })
       await execute(`chmod 400 id_rsa`, ssh);
     }
