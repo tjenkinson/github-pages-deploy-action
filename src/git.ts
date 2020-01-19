@@ -17,7 +17,7 @@ import {
  */
 export async function init(): Promise<any> {
   try {
-    if (
+    /*if (
       isNullOrUndefined(action.accessToken) &&
       isNullOrUndefined(action.gitHubToken) &&
       isNullOrUndefined(action.deployKey)
@@ -41,7 +41,7 @@ export async function init(): Promise<any> {
       await execute(`ssh-keyscan -t rsa github.com > "known_hosts"`, ssh)
       await execute(`chmod 400 id_rsa`, ssh);
       await execute(`ssh-add -K ${ssh}/id_rsa`, workspace);
-    }
+    }*/
 
     if (action.build.startsWith("/") || action.build.startsWith("./")) {
       return core.setFailed(
