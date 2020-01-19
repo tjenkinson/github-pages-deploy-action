@@ -1,47 +1,35 @@
 import * as core from "@actions/core";
 import { execute } from "./execute";
-import { writeFile } from "fs";
-import { promisify } from "util";
 import { isNullOrUndefined } from "./util";
-import {
-  workspace,
-  action,
-  root,
-  ssh,
-  repositoryPath,
-  isTest
-} from "./constants";
+import { workspace, action, root, repositoryPath, isTest } from "./constants";
 
 /** Generates the branch if it doesn't exist on the remote.
  * @returns {Promise}
  */
 export async function init(): Promise<any> {
   try {
-    /*if (
+    if (
       isNullOrUndefined(action.accessToken) &&
       isNullOrUndefined(action.gitHubToken) &&
-      isNullOrUndefined(action.deployKey)
+      isNullOrUndefined(action.ssh)
     ) {
       return core.setFailed(
-        "You must provide the action with either a Personal Access Token or the GitHub Token secret in order to deploy."
+        "You must provide the action with either a Personal Access Token or the GitHub Token secret in order to deploy. If you wish to use an ssh deploy token then you must set SSH to true."
       );
     }
 
-    if (!isNullOrUndefined(action.deployKey)) {
-      const createFile = promisify(writeFile);
-      await execute(`mkdir -p ${ssh}`, workspace);
-      await createFile(`${ssh}/id_rsa`, action.deployKey, {
-        mode: 0o400,
-        flag: 'ax'
-      })
-      await createFile(`${ssh}/known_hosts`, '', {
-        mode: 0o400,
-        flag: 'ax'
-      })
-      await execute(`ssh-keyscan -t rsa github.com > "known_hosts"`, ssh)
-      await execute(`chmod 400 id_rsa`, ssh);
-      await execute(`ssh-add -K ${ssh}/id_rsa`, workspace);
-    }*/
+    const sshAuthenticated = await execute(
+      `ssh -T git@github.com | wc -l`,
+      workspace
+    );
+
+    if (action.ssh && !sshAuthenticated) {
+      return core.setFailed(
+        `You're not authenticated with SSH. Please double check your deploy token configuration and try again.`
+      );
+    } else if (action.ssh && sshAuthenticated) {
+      console.log("SSH is correctly authenticated, proceeding... 🔑");
+    }
 
     if (action.build.startsWith("/") || action.build.startsWith("./")) {
       return core.setFailed(
