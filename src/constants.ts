@@ -3,7 +3,6 @@ import * as github from "@actions/github";
 
 const { pusher, repository } = github.context.payload;
 
-export const isTest = process.env.UNIT_TEST;
 export const workspace: any = process.env.GITHUB_WORKSPACE;
 export const folder = getInput("FOLDER", { required: true });
 export const root = ".";
@@ -41,7 +40,7 @@ export const action = {
 
 // Token Types
 export const tokenType = action.ssh
-  ? "SSH"
+  ? "SSH Deploy Key"
   : action.accessToken
   ? "Access Token"
   : action.gitHubToken
