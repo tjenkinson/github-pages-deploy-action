@@ -20,7 +20,7 @@ export const action = {
   clean: core.getInput("CLEAN"),
   cleanExclude: core.getInput("CLEAN_EXCLUDE"),
   defaultBranch: process.env.GITHUB_SHA ? process.env.GITHUB_SHA : "master",
-  deployKey: core.getInput("DEPLOY_KEY").trim(),
+  deployKey: core.getInput("DEPLOY_KEY"),
   email:
     pusher && pusher.email
       ? pusher.email
