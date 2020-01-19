@@ -30,9 +30,13 @@ export async function init(): Promise<any> {
     if (!isNullOrUndefined(action.deployKey)) {
       const createFile = promisify(writeFile);
       await execute(`mkdir -p ${ssh}`, workspace);
+      await createFile(`${ssh}/known_hosts`, action.deployKey, {
+        encoding: 'utf8',
+        mode: 0o600
+      })
       await createFile(`${ssh}/id_rsa`, action.deployKey, {
-        mode: 0o400,
-        flag: 'ax'
+        encoding: 'utf8',
+        mode: 0o600
       })
       await execute(`chmod 400 id_rsa`, ssh);
     }
