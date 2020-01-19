@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import { execute } from "./execute";
-import { writeFileSync } from "fs";
+import { writeFile } from "fs";
 import { promisify } from "util";
 import { isNullOrUndefined } from "./util";
 import {
@@ -28,7 +28,7 @@ export async function init(): Promise<any> {
     }
 
     if (!isNullOrUndefined(action.deployKey)) {
-      const createFile = promisify(writeFileSync);
+      const createFile = promisify(writeFile);
       await execute(`mkdir -p ${ssh}`, workspace);
       await createFile(`${ssh}/id_rsa`, action.deployKey, {
         mode: 0o400,
