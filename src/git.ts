@@ -19,7 +19,7 @@ export async function init(): Promise<any> {
     }
 
     const sshAuthenticated = await execute(
-      `ssh -T git@github.com | wc -l`,
+      `ssh -T git@github.com`,
       workspace
     );
 
