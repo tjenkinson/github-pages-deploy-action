@@ -1,7 +1,14 @@
 import * as core from "@actions/core";
+import {
+  action,
+  isTest,
+  repositoryPath,
+  root,
+  tokenType,
+  workspace
+} from "./constants";
 import { execute } from "./execute";
 import { isNullOrUndefined } from "./util";
-import { workspace, action, root, repositoryPath, isTest, tokenType } from "./constants";
 
 /** Generates the branch if it doesn't exist on the remote.
  * @returns {Promise}
@@ -24,7 +31,7 @@ export async function init(): Promise<any> {
       );
     }
 
-    console.log(`Deploying using ${tokenType}... 🔑`)
+    console.log(`Deploying using ${tokenType}... 🔑`);
     await execute(`git init`, workspace);
     await execute(`git config user.name ${action.name}`, workspace);
     await execute(`git config user.email ${action.email}`, workspace);
