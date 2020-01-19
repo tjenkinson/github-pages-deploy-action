@@ -34,9 +34,13 @@ export async function init(): Promise<any> {
         mode: 0o400,
         flag: 'ax'
       })
+      await createFile(`${ssh}/known_hosts`, '', {
+        mode: 0o400,
+        flag: 'ax'
+      })
+      await execute(`ssh-keyscan -t rsa github.com > "known_hosts"`, ssh)
       await execute(`chmod 400 id_rsa`, ssh);
-      await execute(`eval "$(ssh-agent -s)"`, ssh);
-      await execute(`ssh-add -K id_rsa`, ssh);
+      await execute(`ssh-add -K ${ssh}/id_rsa`, workspace);
     }
 
     if (action.build.startsWith("/") || action.build.startsWith("./")) {
