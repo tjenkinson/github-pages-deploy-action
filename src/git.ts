@@ -191,7 +191,6 @@ export async function deploy(action: ActionInterface): Promise<void> {
 
     if (action.clearHistory) {
       await execute(
-        `git push ${action.repositoryPath} \`git subtree split ${temporaryDeploymentBranch}':${action.branch} --force`,
         `${action.workspace}/${temporaryDeploymentDirectory}`
       )
     } else {
