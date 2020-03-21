@@ -169,6 +169,11 @@ export async function deploy(action: ActionInterface): Promise<void> {
       return
     }
 
+  
+    if (action.clearHistory) {
+      await execute(`git reset $(git merge-base ${action.baseBranch} ${temporaryDeploymentBranch})`, `${action.workspace}/${temporaryDeploymentDirectory}`)
+    }
+
     // Commits to GitHub.
     await execute(
       `git add --all .`,
@@ -178,6 +183,7 @@ export async function deploy(action: ActionInterface): Promise<void> {
       `git checkout -b ${temporaryDeploymentBranch}`,
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
+
     await execute(
       `git commit -m "${
         !isNullOrUndefined(action.commitMessage)
@@ -189,17 +195,10 @@ export async function deploy(action: ActionInterface): Promise<void> {
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
 
-    if (action.clearHistory) {
-      await execute(
-        `git subtree push --prefix ${temporaryDeploymentDirectory} ${temporaryDeploymentBranch} ${action.branch}`,
-        `${action.workspace}/${temporaryDeploymentDirectory}`
-      )
-    } else {
-      await execute(
-        `git push --force ${action.repositoryPath} ${temporaryDeploymentBranch}:${action.branch}`,
-        `${action.workspace}/${temporaryDeploymentDirectory}`
-      )
-    }
+    await execute(
+      `git push ${action.repositoryPath} ${temporaryDeploymentBranch}:${action.branch}`,
+      `${action.workspace}/${temporaryDeploymentDirectory}`
+    )
 
     console.log(`Changes committed to the ${action.branch} branch… 📦`)
 
