@@ -7,6 +7,9 @@ yarn-debug.log*
 yarn-error.log*
 #node_modules
 
+# Build
+lib
+
 ## Registry
 package-lock.json
 yarn-error.log
@@ -17,3 +20,6 @@ yarn-error.log
 
 ## CodeCov
 coverage
+
+# Yarn Integrity file
+.yarn-integrity

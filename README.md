@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/JamesIves/github-pages-deploy-action/workflows/unit-tests/badge.svg)](https://github.com/JamesIves/github-pages-deploy-action/actions) [![Actions Status](https://github.com/JamesIves/github-pages-deploy-action/workflows/integration-tests/badge.svg)](https://github.com/JamesIves/github-pages-deploy-action/actions) [![View Action](https://img.shields.io/badge/action-marketplace-blue.svg?logo=github&color=orange)](https://github.com/marketplace/actions/deploy-to-github-pages) [![Version](https://img.shields.io/github/v/release/JamesIves/github-pages-deploy-action.svg?logo=github)](https://github.com/JamesIves/github-pages-deploy-action/releases) [![Codecov Coverage](https://codecov.io/gh/JamesIves/github-pages-deploy-action/branch/dev/graph/badge.svg)](https://codecov.io/gh/JamesIves/github-pages-deploy-action/branch/dev)
 
-This [GitHub action](https://github.com/features/actions) will handle the deploy process of your project to [GitHub Pages](https://pages.github.com/). It can be configured to upload your production-ready code into any branch you'd like, including `gh-pages` and `docs`.
+This [GitHub Action](https://github.com/features/actions) will deploy your project to [GitHub Pages](https://pages.github.com/). It can be configured to upload your production-ready code into any branch you'd like, including `gh-pages` and `docs`.
 
 ![Example Screenshot](screenshot.png)
 
@@ -19,12 +19,17 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout 🛎️
         uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
         with:
           persist-credentials: false
 
-      - name: Build and Deploy
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -56,7 +61,7 @@ import run, {
   init,
   deploy,
   generateBranch,
-  actionInterface
+  ActionInterface
 } from "github-pages-deploy-action";
 ```
 
@@ -74,7 +79,7 @@ run({
 });
 ```
 
-For more information regarding the [action interface please click here](https://github.com/JamesIves/github-pages-deploy-action/blob/dev/src/constants.ts#L7).
+For more information regarding the [action interface please click here](https://github.com/JamesIves/github-pages-deploy-action/blob/dev/src/constants.ts#L7). You can find the npm listing for the module [here](https://www.npmjs.com/package/github-pages-deploy-action).
 
 ## Configuration 📁
 
@@ -129,12 +134,12 @@ Once you've generated the key pair you must add the contents of the public key w
 With this configured you must add the `ssh-agent` step to your workflow and set `SSH` to `true` within the deploy action.
 
 ```yml
-- name: Install SSH Client
+- name: Install SSH Client 🔑
   uses: webfactory/ssh-agent@v0.2.0
   with:
     ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-- name: Build and Deploy
+- name: Deploy 🚀
   uses: JamesIves/github-pages-deploy-action@releases/v3
   with:
     SSH: true
@@ -155,22 +160,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout 🛎️
         uses: actions/checkout@v2
         with:
           persist-credentials: false
 
-      - name: Install
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
           npm install
-          npm run-script build
+          npm run build
 
-      - name: Install SSH Client
+      - name: Install SSH Client 🔑
         uses: webfactory/ssh-agent@v0.2.0 # This step installs the ssh client into the workflow run. There's many options available for this on the action marketplace.
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Build and Deploy Repo
+      - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3-test
         with:
           BASE_BRANCH: master
@@ -207,17 +212,17 @@ jobs:
   build:
     runs-on: windows-latest # The first job utilizes windows-latest
     steps:
-      - name: Checkout
+      - name: Checkout 🛎️
         uses: actions/checkout@v2
         with:
           persist-credentials: false
 
-      - name: Install # The project is built using npm and placed in the 'build' folder.
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
           npm install
-          npm run-script build
+          npm run build
 
-      - name: Upload Artifacts # The project is then uploaded as an artifact named 'site'.
+      - name: Upload Artifacts 🔺 # The project is then uploaded as an artifact named 'site'.
         uses: actions/upload-artifact@v1
         with:
           name: site
@@ -227,17 +232,17 @@ jobs:
     needs: [build] # The second job must depend on the first one to complete before running, and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout 🛎️
         uses: actions/checkout@v2
         with:
           persist-credentials: false
 
-      - name: Download Artifacts # The built project is downloaded into the 'site' folder.
+      - name: Download Artifacts 🔻 # The built project is downloaded into the 'site' folder.
         uses: actions/download-artifact@v1
         with:
           name: site
 
-      - name: Build and Deploy
+      - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -255,11 +260,11 @@ jobs:
 If you use a [container](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontainer) in your workflow you may need to run an additional step to install `rsync` as this action depends on it. You can view an example of this below.
 
 ```yml
-- name: Install rsync
+- name: Install rsync 📚
   run: |
     apt-get update && apt-get install -y rsync
 
-- name: Deploy
+- name: Deploy 🚀
   uses: JamesIves/github-pages-deploy-action@releases/v3
 ```
 
