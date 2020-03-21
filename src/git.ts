@@ -188,10 +188,18 @@ export async function deploy(action: ActionInterface): Promise<void> {
       } 🚀" --quiet`,
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
-    await execute(
-      `git push --force ${action.repositoryPath} ${temporaryDeploymentBranch}:${action.branch}`,
-      `${action.workspace}/${temporaryDeploymentDirectory}`
-    )
+
+    if (action.clearHistory) {
+      await execute(
+        `git push --force ${action.repositoryPath} \`git subtree split --prefix ${temporaryDeploymentDirectory} ${action.baseBranch}\`:${action.branch}`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+    } else {
+      await execute(
+        `git push --force ${action.repositoryPath} ${temporaryDeploymentBranch}:${action.branch}`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+    }
 
     console.log(`Changes committed to the ${action.branch} branch… 📦`)
 
