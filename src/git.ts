@@ -18,20 +18,14 @@ export async function init(action: ActionInterface): Promise<void | Error> {
     await execute(`git init`, action.workspace)
     await execute(`git config user.name "${action.name}"`, action.workspace)
     await execute(`git config user.email "${action.email}"`, action.workspace)
+    await execute(`git remote rm origin`, action.workspace)
+    await execute(
+      `git remote add origin ${action.repositoryPath}`,
+      action.workspace
+    )
+    await execute(`git fetch`, action.workspace)
 
-    try {
-      await execute(`git remote rm origin`, action.workspace)
-    } catch (error) {
-      info('There was an error here but it was swallowed')
-    } finally {
-      await execute(
-        `git remote add origin ${action.repositoryPath}`,
-        action.workspace
-      )
-
-      await execute(`git fetch`, action.workspace)
-      info('Git configured... 🔧')
-    }
+    info('Git configured... 🔧')
   } catch (error) {
     throw new Error(
       `There was an error initializing the repository: ${suppressSensitiveInformation(
