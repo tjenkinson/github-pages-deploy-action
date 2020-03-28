@@ -16,8 +16,6 @@ export interface ActionInterface {
   clean?: string | boolean
   /** If you need to use CLEAN but you'd like to preserve certain files or folders you can use this option. */
   cleanExclude?: string | string[]
-  /** Removes the entire Git history on the branch in favor of a single commit. */
-  clearHistory?: string | boolean
   /** If you need to customize the commit message for an integration you can do so. */
   commitMessage?: string
   /** The default branch of the deployment. Similar to baseBranch if you're using this action as a module. */

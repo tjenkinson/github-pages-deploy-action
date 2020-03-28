@@ -13,8 +13,6 @@ export interface ActionInterface {
     clearHistory?: string | boolean;
     /** If you need to customize the commit message for an integration you can do so. */
     commitMessage?: string;
-    /** Unhides the Git commands from the function terminal. */
-    debug?: boolean | string;
     /** The default branch of the deployment. Similar to baseBranch if you're using this action as a module. */
     defaultBranch?: string;
     /** The git config email. */

@@ -175,11 +175,6 @@ export async function deploy(action: ActionInterface): Promise<void> {
       return
     }
 
-  
-    if (action.clearHistory) {
-      await execute(`git reset $(git merge-base ${action.baseBranch} ${temporaryDeploymentBranch})`, `${action.workspace}/${temporaryDeploymentDirectory}`)
-    }
-
     // Commits to GitHub.
     await execute(
       `git add --all .`,
