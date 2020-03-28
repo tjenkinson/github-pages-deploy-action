@@ -20,8 +20,6 @@ export interface ActionInterface {
   clearHistory?: string | boolean
   /** If you need to customize the commit message for an integration you can do so. */
   commitMessage?: string
-  /** Unhides the Git commands from the function terminal. */
-  debug?: boolean | string
   /** The default branch of the deployment. Similar to baseBranch if you're using this action as a module. */
   defaultBranch?: string
   /** The git config email. */
@@ -59,8 +57,6 @@ export const action: ActionInterface = {
   commitMessage: getInput('COMMIT_MESSAGE'),
   clean: getInput('CLEAN'),
   cleanExclude: getInput('CLEAN_EXCLUDE'),
-  clearHistory: getInput('CLEAR_HISTORY'),
-  debug: getInput('DEBUG'),
   defaultBranch: process.env.GITHUB_SHA ? process.env.GITHUB_SHA : 'master',
   isTest: process.env.UNIT_TEST,
   ssh: getInput('SSH'),
@@ -68,8 +64,9 @@ export const action: ActionInterface = {
     ? getInput('GIT_CONFIG_EMAIL')
     : pusher && pusher.email
     ? pusher.email
-    : `${process.env.GITHUB_ACTOR ||
-        'github-pages-deploy-action'}@users.noreply.github.com`,
+    : `${
+        process.env.GITHUB_ACTOR || 'github-pages-deploy-action'
+      }@users.noreply.github.com`,
   gitHubToken: getInput('GITHUB_TOKEN'),
   name: !isNullOrUndefined(getInput('GIT_CONFIG_NAME'))
     ? getInput('GIT_CONFIG_NAME')
