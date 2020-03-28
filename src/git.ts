@@ -184,7 +184,6 @@ export async function deploy(action: ActionInterface): Promise<void> {
       `git checkout -b ${temporaryDeploymentBranch}`,
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
-
     await execute(
       `git commit -m "${
         !isNullOrUndefined(action.commitMessage)
@@ -195,9 +194,8 @@ export async function deploy(action: ActionInterface): Promise<void> {
       } 🚀" --quiet`,
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
-
     await execute(
-      `git push ${action.repositoryPath} ${temporaryDeploymentBranch}:${action.branch}`,
+      `git push --force ${action.repositoryPath} ${temporaryDeploymentBranch}:${action.branch}`,
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
 
