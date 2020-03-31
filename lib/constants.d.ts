@@ -6,7 +6,7 @@ export interface ActionInterface {
     /** The branch that the action should deploy to. */
     branch: string;
     /** If your project generates hashed files on build you can use this option to automatically delete them from the deployment branch with each deploy. This option can be toggled on by setting it to true. */
-    clean?: string | boolean;
+    clean?: boolean | null;
     /** If you need to use CLEAN but you'd like to preserve certain files or folders you can use this option. */
     cleanExclude?: string | string[];
     /** If you need to customize the commit message for an integration you can do so. */
@@ -20,7 +20,7 @@ export interface ActionInterface {
     /** GitHub deployment token. */
     gitHubToken?: string | null;
     /** Determines if the action is running in test mode or not. */
-    isTest?: string | undefined | null;
+    isTest?: boolean | null;
     /** The git config name. */
     name?: string;
     /** The repository path, for example JamesIves/github-pages-deploy-action. */
@@ -29,8 +29,10 @@ export interface ActionInterface {
     repositoryPath?: string;
     /** The root directory where your project lives. */
     root?: string;
+    /** Wipes the commit history from the deployment branch in favor of a single commit. */
+    singleCommit?: boolean | null;
     /** Set to true if you're using an ssh client in your build step. */
-    ssh?: string | boolean | null;
+    ssh?: boolean | null;
     /** If you'd like to push the contents of the deployment folder into a specific directory on the deployment branch you can specify it here. */
     targetFolder?: string;
     /** The token type, ie ssh/github token/access token, this gets automatically generated. */
