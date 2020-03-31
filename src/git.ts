@@ -12,8 +12,8 @@ export async function init(action: ActionInterface): Promise<void | Error> {
   try {
     hasRequiredParameters(action)
 
-    info(`Deploying using ${action.tokenType}... 🔑`)
-    info('Configuring git...')
+    info(`Deploying using ${action.tokenType}… 🔑`)
+    info('Configuring git…')
 
     await execute(`git init`, action.workspace)
     await execute(`git config user.name "${action.name}"`, action.workspace)
@@ -25,7 +25,7 @@ export async function init(action: ActionInterface): Promise<void | Error> {
     )
     await execute(`git fetch`, action.workspace)
 
-    info('Git configured... 🔧')
+    info('Git configured… 🔧')
   } catch (error) {
     throw new Error(
       `There was an error initializing the repository: ${suppressSensitiveInformation(
@@ -64,13 +64,13 @@ export async function generateBranch(action: ActionInterface): Promise<void> {
   try {
     hasRequiredParameters(action)
 
-    info(`Creating the ${action.branch} branch...`)
+    info(`Creating the ${action.branch} branch…`)
 
     await switchToBaseBranch(action)
     await execute(`git checkout --orphan ${action.branch}`, action.workspace)
     await execute(`git reset --hard`, action.workspace)
     await execute(
-      `git commit --allow-empty -m "Initial ${action.branch} commit."`,
+      `git commit --allow-empty -m "Initial ${action.branch} commit"`,
       action.workspace
     )
     await execute(
@@ -79,7 +79,7 @@ export async function generateBranch(action: ActionInterface): Promise<void> {
     )
     await execute(`git fetch`, action.workspace)
 
-    info(`Created the ${action.branch} branch... 🔧`)
+    info(`Created the ${action.branch} branch… 🔧`)
   } catch (error) {
     throw new Error(
       `There was an error creating the deployment branch: ${suppressSensitiveInformation(
@@ -94,10 +94,17 @@ export async function generateBranch(action: ActionInterface): Promise<void> {
 export async function deploy(action: ActionInterface): Promise<void> {
   const temporaryDeploymentDirectory = 'gh-action-temp-deployment-folder'
   const temporaryDeploymentBranch = 'gh-action-temp-deployment-branch'
-  info('Starting to commit changes...')
+
+  info('Starting to commit changes…')
 
   try {
     hasRequiredParameters(action)
+
+    const commitMessage = `${
+      !isNullOrUndefined(action.commitMessage)
+        ? action.commitMessage
+        : `Deploying to ${action.branch} from ${action.baseBranch}`
+    } ${process.env.GITHUB_SHA ? `@ ${process.env.GITHUB_SHA}` : ''} 🚀`
 
     /*
         Checks to see if the remote exists prior to deploying.
@@ -166,7 +173,7 @@ export async function deploy(action: ActionInterface): Promise<void> {
     )
 
     if (!hasFilesToCommit && !action.isTest) {
-      info('There is nothing to commit. Exiting early... 📭')
+      info('There is nothing to commit. Exiting early… 📭')
       return
     }
 
@@ -180,13 +187,7 @@ export async function deploy(action: ActionInterface): Promise<void> {
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
     await execute(
-      `git commit -m "${
-        !isNullOrUndefined(action.commitMessage)
-          ? action.commitMessage
-          : `Deploying to ${action.branch} from ${action.baseBranch}`
-      } ${
-        process.env.GITHUB_SHA ? `- ${process.env.GITHUB_SHA}` : ''
-      } 🚀" --quiet`,
+      `git commit -m "${commitMessage}" --quiet`,
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
     await execute(
@@ -194,10 +195,37 @@ export async function deploy(action: ActionInterface): Promise<void> {
       `${action.workspace}/${temporaryDeploymentDirectory}`
     )
 
-    info(`Changes committed to the ${action.branch} branch... 📦`)
+    info(`Changes committed to the ${action.branch} branch… 📦`)
 
     // Cleans up temporary files/folders and restores the git state.
-    info('Running post deployment cleanup jobs...')
+    info('Running post deployment cleanup jobs…')
+
+    if (action.singleCommit) {
+      await execute(`git fetch ${action.repositoryPath}`, action.workspace)
+      await execute(
+        `git checkout --orphan ${action.branch}-temp`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+      await execute(
+        `git add --all .`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+      await execute(
+        `git commit -m "${commitMessage}" --quiet`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+      await execute(
+        `git branch -M ${action.branch}-temp ${action.branch}`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+      await execute(
+        `git push origin ${action.branch} --force`,
+        `${action.workspace}/${temporaryDeploymentDirectory}`
+      )
+
+      info('Cleared git history… 🚿')
+    }
+
     await execute(
       `git checkout --progress --force ${action.defaultBranch}`,
       action.workspace
