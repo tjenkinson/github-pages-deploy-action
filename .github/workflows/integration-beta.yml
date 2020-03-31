@@ -159,7 +159,7 @@ jobs:
           branches: gh-pages-test
 
 
-  # Deploys using the CLEAN option.
+  # Deploys using the CLEAN option toggled.
   integration-clean:
     needs: [integration-checkout-v1, integration-checkout-v2, integration-container, integration-ssh, integration-env]
     runs-on: ubuntu-latest
