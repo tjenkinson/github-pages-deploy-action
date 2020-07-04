@@ -30,12 +30,13 @@ export async function init(action: ActionInterface): Promise<void | Error> {
 
     try {
       await execute(`git remote rm origin`, action.workspace, action.silent)
+    } finally {
       await execute(
         `git remote add origin ${action.repositoryPath}`,
         action.workspace,
         action.silent
       )
-    } finally {
+    
       await execute(
         `git fetch --no-recurse-submodules`,
         action.workspace,
