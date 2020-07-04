@@ -30,6 +30,7 @@ export async function init(action: ActionInterface): Promise<void | Error> {
 
     try {
       await execute(`git remote rm origin`, action.workspace, action.silent)
+    } finally {
       await execute(
         `git remote add origin ${action.repositoryPath}`,
         action.workspace,
@@ -43,10 +44,6 @@ export async function init(action: ActionInterface): Promise<void | Error> {
       )
 
       info('Git configured… 🔧')
-    } catch {
-      throw new Error(
-        `There was an issue establishing your workflow. Please refer to the README and ensure you're running @actions/checkout prior to this step: https://github.com/JamesIves/github-pages-deploy-action/blob/dev/README.md`
-      )
     }
   } catch (error) {
     throw new Error(
