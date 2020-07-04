@@ -38,7 +38,7 @@ export async function init(action: ActionInterface): Promise<void | Error> {
       )
     
       await execute(
-        `git fetch --no-recurse-submodules`,
+        `git fetch ${action.repositoryPath} --no-recurse-submodules`,
         action.workspace,
         action.silent
       )
