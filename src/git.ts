@@ -183,6 +183,9 @@ export async function deploy(action: ActionInterface): Promise<Status> {
       await mkdirP(`${temporaryDeploymentDirectory}/${action.targetFolder}`)
     }
 
+    console.log('checking existance')
+    await execute(`ls ${action.folder}`, action.workspace, false)
+
     /*
       Pushes all of the build files into the deployment directory.
       Allows the user to specify the root if '.' is provided.
