@@ -7,6 +7,7 @@ import {
   isNullOrUndefined,
   suppressSensitiveInformation
 } from './util'
+import fs from 'fs'
 
 /* Initializes git in the workspace. */
 export async function init(action: ActionInterface): Promise<void | Error> {
@@ -193,7 +194,13 @@ export async function deploy(action: ActionInterface): Promise<Status> {
           : temporaryDeploymentDirectory
       } ${
         action.clean
-          ? `--delete ${excludes} --exclude CNAME --exclude .nojekyll`
+          ? `--delete ${excludes} ${
+              !fs.existsSync(`${action.folder}/CNAME`) ? '--exclude CNAME' : ''
+            } ${
+              !fs.existsSync(`${action.folder}/.nojekyll`)
+                ? '--exclude .nojekyll'
+                : ''
+            }`
           : ''
       }  --exclude .ssh --exclude .git --exclude .github ${
         action.folder === action.root

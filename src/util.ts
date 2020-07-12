@@ -1,5 +1,6 @@
 import {isDebug} from '@actions/core'
 import {ActionInterface} from './constants'
+import fs from 'fs'
 
 /* Utility function that checks to see if a value is undefined or not. */
 export const isNullOrUndefined = (value: any): boolean =>
